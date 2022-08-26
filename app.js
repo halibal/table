@@ -1,14 +1,36 @@
 const form = document.querySelector('#form');
 const table = document.querySelector('#table');
+const errorInput = document.querySelector('#errorInput');
+const errorTable = document.querySelector('#errorTable');
 
 form.addEventListener("submit", (e) => {
     e.preventDefault();
+
+    errorInput.innerText = ""; //remove error text
 
     const name = document.querySelector("#name");
     const point = document.querySelector("#point");
 
     // avoid further bugs in new editing entries, value check needs to be done here
-    if (!name.value || !point.value || !isNaN(name.value) || isNaN(point.value) || isAllSpace(point.value) || isAllSpace(name.value)) return;
+    if (!name.value || isAllSpace(name.value)) {
+        errorInput.innerText = "*You can't leave the name field blank..";
+        return;
+    };
+
+    if (!isNaN(name.value)) {
+        errorInput.innerText = "*You can't use only numbers in the name field..";
+        return;
+    }
+
+    if (!point.value || isAllSpace(point.value)) {
+        errorInput.innerText = "*You can't leave the point field blank..";
+        return;
+    };
+
+    if (isNaN(point.value)) {
+        errorInput.innerText = "*You must enter a number in the point field..";
+        return;
+    }
 
     console.log(name.value + ": " + point.value);
 
@@ -51,9 +73,11 @@ document.addEventListener("click", (e) => {
 // delete entry by clicking on trash can icon
 document.addEventListener("click", (e) => {
     if (e.target && e.target.id == "deleteEntry") {
-        e.target.closest("tr").remove();
-        calculateAverage();
-        updateIndex();
+        if (confirm("Are you sure you want to delete this entry?")) {
+            e.target.closest("tr").remove();
+            calculateAverage();
+            updateIndex();
+        };
     }
 });
 
@@ -64,8 +88,25 @@ document.addEventListener("click", (e) => {
         let pointBox = e.target.closest("tr").querySelector("td:nth-child(3)");
 
         // check if innerHTML is NaN or empty and return
-        if (pointBox.innerHTML === "" || (!Number(pointBox.innerHTML) && Number(pointBox.innerHTML) != 0) || isNaN(pointBox.innerHTML)) return;
-        if (nameBox.innerHTML === "" || isAllSpace(nameBox.innerText) || !isNaN(nameBox.innerText)) return;
+        if (isNaN(pointBox.innerHTML) || (!Number(pointBox.innerHTML) && Number(pointBox.innerHTML) != 0)) {
+            errorTable.innerText = "Please enter a valid number..";
+            return;
+        }
+
+        if (pointBox.innerHTML === "") {
+            errorTable.innerText = "*Please do not leave point field empty..";
+            return;
+        }
+
+        if (parseInt(nameBox.innerHTML)) {
+            errorTable.innerText = "*You can't use only numbers in the name field..";
+            return;
+        }
+
+        if (!isNaN(nameBox.innerText)) {
+            errorTable.innerText = "*You can't leave name field empty..";
+            return;
+        };
 
         e.target.classList.add("d-none");
         e.target.closest("td").querySelector("#cancelEdit").classList.add("d-none");
@@ -81,6 +122,7 @@ document.addEventListener("click", (e) => {
         pointBox.contentEditable = "false";
         pointBox.removeAttribute("class", "bg-warning");
 
+        errorTable.innerText = "";
         calculateAverage();
     }
 });
@@ -107,6 +149,7 @@ document.addEventListener('click', (e) => {
         pointBox.contentEditable = "false";
         pointBox.removeAttribute("class", "bg-warning");
 
+        errorTable.innerText = "";
         calculateAverage();
     };
 });

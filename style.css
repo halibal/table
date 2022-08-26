@@ -23,3 +23,8 @@ body {
 i {
     cursor: pointer;
 }
+
+#errorInput,
+#errorTable {
+    font-size: 13px;
+}
