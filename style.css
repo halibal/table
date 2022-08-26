@@ -1,0 +1,25 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+.table {
+    table-layout: auto;
+    width: 100%;
+}
+
+.table tr:nth-child(odd) {
+    background-color: rgb(192, 192, 192);
+}
+.table tr:nth-child(even) {
+    background-color: whitesmoke;
+}
+
+i {
+    cursor: pointer;
+}
